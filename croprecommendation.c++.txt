@@ -1,0 +1,41 @@
+#include <DHT.h>
+
+// Define pins
+#define SOIL_MOISTURE_PIN A0   // Soil sensor connected to analog pin A0
+#define DHTPIN 2               // DHT sensor connected to digital pin 2
+#define DHTTYPE DHT11          // Change to DHT22 if using that model
+
+DHT dht(DHTPIN, DHTTYPE);
+
+void setup() {
+  Serial.begin(9600);      // Start serial communication
+  dht.begin();             // Initialize DHT sensor
+}
+
+void loop() {
+  // Read soil moisture (0 - 1023)
+  int soilValue = analogRead(SOIL_MOISTURE_PIN);
+  int soilMoisturePercent = map(soilValue, 1023, 0, 0, 100); 
+  // (Dry=1023, Wet=0 ? map to %)
+
+  // Read temperature and humidity
+  float temp = dht.readTemperature();   // in °C
+  float hum = dht.readHumidity();       // in %
+
+  // Print readings
+  Serial.print("Soil Moisture: ");
+  Serial.print(soilMoisturePercent);
+  Serial.println(" %");
+
+  Serial.print("Temperature: ");
+  Serial.print(temp);
+  Serial.println(" °C");
+
+  Serial.print("Humidity: ");
+  Serial.print(hum);
+  Serial.println(" %");
+
+  Serial.println("--------------------");
+
+  delay(2000);  // Wait 2 seconds before next reading
+}
